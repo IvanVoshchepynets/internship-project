@@ -14,14 +14,8 @@ const News = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
 
   useEffect(() => {
-    // замокані дані, імітація завантаження
     setNews(newsData as NewsItem[]);
   }, []);
-
-  const handleNewsClick = (id: number) => {
-    console.log("Відкрити новину:", id);
-    // тут пізніше буде модалка або редірект на /news/:id
-  };
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -30,10 +24,10 @@ const News = () => {
         {news.map((item) => (
           <NewsCard
             key={item.id}
+            id={item.id}
             title={item.title}
             preview={item.preview}
             image={item.image}
-            onClick={() => handleNewsClick(item.id)}
           />
         ))}
       </div>
