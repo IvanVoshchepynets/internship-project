@@ -21,7 +21,6 @@ const News = () => {
 	}, []);
 
 	const handleLogout = () => {
-		// скидаємо стан авторизації
 		localStorage.removeItem("auth");
 		navigate("/");
 	};

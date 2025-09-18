@@ -9,13 +9,11 @@ import Header from "../components/Header";
 import Input from "../components/Input";
 import { useAuthStore } from "../store/auth";
 
-// ✅ Схема для логіну: username тепер email
 const loginSchema = z.object({
 	username: z.string().email("Введіть коректний логін"),
 	password: z.string().min(6, "Пароль мінімум 6 символів"),
 });
 
-// ✅ Схема для реєстрації: імʼя тільки букви, username = email
 const registerSchema = z.object({
 	name: z
 		.string()
@@ -33,7 +31,6 @@ const Home = () => {
 	const login = useAuthStore((s) => s.login);
 	const navigate = useNavigate();
 
-	// Логін форма
 	const {
 		register: loginReg,
 		handleSubmit: handleLogin,
@@ -45,7 +42,6 @@ const Home = () => {
 		navigate("/news");
 	};
 
-	// Реєстрація форма
 	const {
 		register: regReg,
 		handleSubmit: handleRegister,
@@ -55,7 +51,7 @@ const Home = () => {
 	const onRegister = (data: RegisterSchema) => {
 		console.log("Mock реєстрація:", data);
 		alert("Реєстрація успішна!");
-		setFormType("login"); // після реєстрації переключаємо на логін
+		setFormType("login"); 
 	};
 
 	return (
