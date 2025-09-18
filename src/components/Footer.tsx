@@ -1,0 +1,9 @@
+const Footer = () => {
+	return (
+		<footer className="bg-gray-100 text-center p-4 mt-10 text-sm text-gray-600">
+			2025 News Project
+		</footer>
+	);
+};
+
+export default Footer;
