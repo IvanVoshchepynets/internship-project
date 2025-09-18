@@ -51,7 +51,7 @@ const Home = () => {
 	const onRegister = (data: RegisterSchema) => {
 		console.log("Mock реєстрація:", data);
 		alert("Реєстрація успішна!");
-		setFormType("login"); 
+		setFormType("login");
 	};
 
 	return (
