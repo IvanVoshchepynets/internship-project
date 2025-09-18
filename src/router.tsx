@@ -4,7 +4,7 @@ import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Home /> },
-  { path: "/news", element: <News /> },
-  { path: "/news/:id", element: <NewsDetail /> }
+	{ path: "/", element: <Home /> },
+	{ path: "/news", element: <News /> },
+	{ path: "/news/:id", element: <NewsDetail /> },
 ]);
