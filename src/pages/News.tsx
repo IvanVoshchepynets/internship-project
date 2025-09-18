@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 import NewsCard from "../components/NewsCard";
 import newsData from "../mock/news.json";
 
@@ -12,14 +14,25 @@ type NewsItem = {
 
 const News = () => {
 	const [news, setNews] = useState<NewsItem[]>([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		setNews(newsData as NewsItem[]);
 	}, []);
 
+	const handleLogout = () => {
+		// скидаємо стан авторизації
+		localStorage.removeItem("auth");
+		navigate("/");
+	};
+
 	return (
 		<div className="p-6 max-w-5xl mx-auto">
-			<h1 className="text-2xl font-bold mb-6">Стрічка новин</h1>
+			<div className="flex justify-between items-center mb-6">
+				<h1 className="text-2xl font-bold">Стрічка новин</h1>
+				<Button onClick={handleLogout}>Вийти</Button>
+			</div>
+
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{news.map((item) => (
 					<NewsCard

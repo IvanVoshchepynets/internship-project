@@ -9,14 +9,19 @@ import Header from "../components/Header";
 import Input from "../components/Input";
 import { useAuthStore } from "../store/auth";
 
+// ✅ Схема для логіну: username тепер email
 const loginSchema = z.object({
-	username: z.string().min(3, "Логін мінімум 3 символи"),
+	username: z.string().email("Введіть коректний логін"),
 	password: z.string().min(6, "Пароль мінімум 6 символів"),
 });
 
+// ✅ Схема для реєстрації: імʼя тільки букви, username = email
 const registerSchema = z.object({
-	name: z.string().min(2, "Імʼя мінімум 2 символи"),
-	username: z.string().min(3, "Логін мінімум 3 символи"),
+	name: z
+		.string()
+		.min(2, "Імʼя мінімум 2 символи")
+		.regex(/^[A-Za-zА-Яа-яІіЇїЄєҐґ\s]+$/, "Імʼя повинно містити лише букви"),
+	username: z.string().email("Введіть коректний логін"),
 	password: z.string().min(6, "Пароль мінімум 6 символів"),
 });
 
@@ -72,6 +77,7 @@ const Home = () => {
 						<h2 className="text-lg font-bold mb-4">Вхід</h2>
 						<Input
 							label="Логін"
+							type="email"
 							{...loginReg("username")}
 							error={loginErrors.username?.message}
 						/>
@@ -98,6 +104,7 @@ const Home = () => {
 						/>
 						<Input
 							label="Логін"
+							type="email"
 							{...regReg("username")}
 							error={regErrors.username?.message}
 						/>
