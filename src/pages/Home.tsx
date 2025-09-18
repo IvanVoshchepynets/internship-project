@@ -10,13 +10,16 @@ import Input from "../components/Input";
 import { useAuthStore } from "../store/auth";
 
 const loginSchema = z.object({
-	username: z.string().min(3, "Логін мінімум 3 символи"),
+	username: z.string().email("Введіть коректний логін"),
 	password: z.string().min(6, "Пароль мінімум 6 символів"),
 });
 
 const registerSchema = z.object({
-	name: z.string().min(2, "Імʼя мінімум 2 символи"),
-	username: z.string().min(3, "Логін мінімум 3 символи"),
+	name: z
+		.string()
+		.min(2, "Імʼя мінімум 2 символи")
+		.regex(/^[A-Za-zА-Яа-яІіЇїЄєҐґ\s]+$/, "Імʼя повинно містити лише букви"),
+	username: z.string().email("Введіть коректний логін"),
 	password: z.string().min(6, "Пароль мінімум 6 символів"),
 });
 
@@ -28,7 +31,6 @@ const Home = () => {
 	const login = useAuthStore((s) => s.login);
 	const navigate = useNavigate();
 
-	// Логін форма
 	const {
 		register: loginReg,
 		handleSubmit: handleLogin,
@@ -40,7 +42,6 @@ const Home = () => {
 		navigate("/news");
 	};
 
-	// Реєстрація форма
 	const {
 		register: regReg,
 		handleSubmit: handleRegister,
@@ -50,7 +51,7 @@ const Home = () => {
 	const onRegister = (data: RegisterSchema) => {
 		console.log("Mock реєстрація:", data);
 		alert("Реєстрація успішна!");
-		setFormType("login"); // після реєстрації переключаємо на логін
+		setFormType("login");
 	};
 
 	return (
@@ -72,6 +73,7 @@ const Home = () => {
 						<h2 className="text-lg font-bold mb-4">Вхід</h2>
 						<Input
 							label="Логін"
+							type="email"
 							{...loginReg("username")}
 							error={loginErrors.username?.message}
 						/>
@@ -98,6 +100,7 @@ const Home = () => {
 						/>
 						<Input
 							label="Логін"
+							type="email"
 							{...regReg("username")}
 							error={regErrors.username?.message}
 						/>
