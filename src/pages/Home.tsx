@@ -1,122 +1,65 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { z } from "zod";
-import Button from "../components/Button";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import Input from "../components/Input";
 import { useAuthStore } from "../store/auth";
-
-const loginSchema = z.object({
-	username: z.string().email("Введіть коректний логін"),
-	password: z.string().min(6, "Пароль мінімум 6 символів"),
-});
-
-const registerSchema = z.object({
-	name: z
-		.string()
-		.min(2, "Імʼя мінімум 2 символи")
-		.regex(/^[A-Za-zА-Яа-яІіЇїЄєҐґ\s]+$/, "Імʼя повинно містити лише букви"),
-	username: z.string().email("Введіть коректний логін"),
-	password: z.string().min(6, "Пароль мінімум 6 символів"),
-});
-
-type LoginSchema = z.infer<typeof loginSchema>;
-type RegisterSchema = z.infer<typeof registerSchema>;
+import Layout from "../components/Layout";
+import Button from "../components/Button";
+import { AuthForm } from "../components/AuthForm";
+import {
+  loginSchema,
+  registerSchema,
+  type LoginSchema,
+  type RegisterSchema,
+} from "../schemas/authSchemas";
 
 const Home = () => {
-	const [formType, setFormType] = useState<"login" | "register" | null>(null);
-	const login = useAuthStore((s) => s.login);
-	const navigate = useNavigate();
+  const [formType, setFormType] = useState<"login" | "register" | null>(null);
+  const { login, isAuthenticated, username, logout } = useAuthStore();
+  const navigate = useNavigate();
 
-	const {
-		register: loginReg,
-		handleSubmit: handleLogin,
-		formState: { errors: loginErrors },
-	} = useForm<LoginSchema>({ resolver: zodResolver(loginSchema) });
+  const onLogin = (data: LoginSchema) => {
+    login(data.username);
+    navigate("/news");
+  };
 
-	const onLogin = (data: LoginSchema) => {
-		login(data.username);
-		navigate("/news");
-	};
+  const onRegister = (data: RegisterSchema) => {
+    console.log("Mock реєстрація:", data);
+    alert("Реєстрація успішна!");
+    setFormType("login");
+  };
 
-	const {
-		register: regReg,
-		handleSubmit: handleRegister,
-		formState: { errors: regErrors },
-	} = useForm<RegisterSchema>({ resolver: zodResolver(registerSchema) });
+  return (
+    <Layout>
+      {!formType && (
+        <div className="flex gap-4">
+          <Button onClick={() => setFormType("login")}>Вхід</Button>
+          <Button onClick={() => setFormType("register")}>Реєстрація</Button>
+        </div>
+      )}
 
-	const onRegister = (data: RegisterSchema) => {
-		console.log("Mock реєстрація:", data);
-		alert("Реєстрація успішна!");
-		setFormType("login");
-	};
+      {formType === "login" && (
+        <AuthForm<LoginSchema>
+          schema={loginSchema}
+          fields={[
+            { name: "username", label: "Логін", type: "email" },
+            { name: "password", label: "Пароль", type: "password" },
+          ]}
+          onSubmit={onLogin}
+        />
+      )}
 
-	return (
-		<div className="flex flex-col min-h-screen">
-			<Header />
-			<main className="flex-1 flex flex-col items-center justify-center">
-				{!formType && (
-					<div className="flex gap-4">
-						<Button onClick={() => setFormType("login")}>Вхід</Button>
-						<Button onClick={() => setFormType("register")}>Реєстрація</Button>
-					</div>
-				)}
-
-				{formType === "login" && (
-					<form
-						onSubmit={handleLogin(onLogin)}
-						className="w-80 p-6 border rounded mt-6"
-					>
-						<h2 className="text-lg font-bold mb-4">Вхід</h2>
-						<Input
-							label="Логін"
-							type="email"
-							{...loginReg("username")}
-							error={loginErrors.username?.message}
-						/>
-						<Input
-							label="Пароль"
-							type="password"
-							{...loginReg("password")}
-							error={loginErrors.password?.message}
-						/>
-						<Button type="submit">Увійти</Button>
-					</form>
-				)}
-
-				{formType === "register" && (
-					<form
-						onSubmit={handleRegister(onRegister)}
-						className="w-80 p-6 border rounded mt-6"
-					>
-						<h2 className="text-lg font-bold mb-4">Реєстрація</h2>
-						<Input
-							label="Імʼя"
-							{...regReg("name")}
-							error={regErrors.name?.message}
-						/>
-						<Input
-							label="Логін"
-							type="email"
-							{...regReg("username")}
-							error={regErrors.username?.message}
-						/>
-						<Input
-							label="Пароль"
-							type="password"
-							{...regReg("password")}
-							error={regErrors.password?.message}
-						/>
-						<Button type="submit">Зареєструватися</Button>
-					</form>
-				)}
-			</main>
-			<Footer />
-		</div>
-	);
+      {formType === "register" && (
+        <AuthForm<RegisterSchema>
+          schema={registerSchema}
+          fields={[
+            { name: "name", label: "Імʼя" },
+            { name: "username", label: "Логін", type: "email" },
+            { name: "password", label: "Пароль", type: "password" },
+          ]}
+          onSubmit={onRegister}
+        />
+      )}
+    </Layout>
+  );
 };
 
 export default Home;
