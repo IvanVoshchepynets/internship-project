@@ -1,34 +1,33 @@
 import { useNavigate } from "react-router-dom";
 
-interface NewsCardProps {
+type NewsCardProps = {
 	id: string;
-	title: string;
-	preview: string;
 	image?: string;
-}
+	title: string;
+	description: string;
+};
 
-const NewsCard = ({ id, title, preview, image }: NewsCardProps) => {
+export default function NewsCard({
+	id,
+	image,
+	title,
+	description,
+}: NewsCardProps) {
 	const navigate = useNavigate();
 
 	return (
-		<div
-			className="border rounded overflow-hidden shadow hover:shadow-lg cursor-pointer"
+		<button
+			type="button"
+			className="w-full text-left border rounded overflow-hidden shadow hover:shadow-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
 			onClick={() => navigate(`/news/${encodeURIComponent(id)}`)}
 		>
 			{image && (
-				<img
-					src={image}
-					alt={title}
-					loading="lazy"
-					className="w-full h-40 object-cover"
-				/>
+				<img src={image} alt={title} className="w-full h-48 object-cover" />
 			)}
 			<div className="p-4">
-				<h2 className="text-lg font-bold mb-2">{title}</h2>
-				<p className="text-gray-600">{preview}</p>
+				<h2 className="text-lg font-semibold">{title}</h2>
+				<p className="text-sm text-gray-600">{description}</p>
 			</div>
-		</div>
+		</button>
 	);
-};
-
-export default NewsCard;
+}
