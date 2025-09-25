@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import newsData from "../mock/news.json";
 
@@ -9,12 +10,28 @@ type NewsItem = {
 	content: string;
 };
 
+const fetchNewsById = async (id: string): Promise<NewsItem | undefined> => {
+	const news = newsData as NewsItem[];
+	return news.find((item) => item.id === Number(id));
+};
+
 const NewsDetail = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
-	const news = (newsData as NewsItem[]).find((item) => item.id === Number(id));
+	const {
+		data: news,
+		isLoading,
+		error,
+	} = useQuery({
+		queryKey: ["news", id],
+		queryFn: () => fetchNewsById(id!),
+		enabled: !!id,
+	});
 
+	if (isLoading) return <div className="p-6">Завантаження...</div>;
+	if (error)
+		return <div className="p-6 text-red-500">Помилка завантаження</div>;
 	if (!news) {
 		return (
 			<div className="p-6">
@@ -40,6 +57,7 @@ const NewsDetail = () => {
 			<img
 				src={news.image}
 				alt={news.title}
+				loading="lazy"
 				className="w-full h-60 object-cover rounded mb-4"
 			/>
 			<p className="text-gray-700 text-lg leading-relaxed">{news.content}</p>

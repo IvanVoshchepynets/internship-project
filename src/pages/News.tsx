@@ -1,29 +1,41 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import NewsCard from "../components/NewsCard";
-import newsData from "../mock/news.json";
 
 type NewsItem = {
-	id: number;
+	id: string;
 	title: string;
+	link: string;
 	preview: string;
-	image: string;
-	content: string;
+	pubDate: string;
+};
+
+const fetchNews = async (): Promise<NewsItem[]> => {
+	const res = await fetch("http://localhost:3000/feed");
+	if (!res.ok) throw new Error("Помилка при завантаженні новин");
+	return res.json();
 };
 
 const News = () => {
-	const [news, setNews] = useState<NewsItem[]>([]);
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		setNews(newsData as NewsItem[]);
-	}, []);
+	const {
+		data: news = [],
+		isLoading,
+		error,
+	} = useQuery({
+		queryKey: ["news"],
+		queryFn: fetchNews,
+	});
 
 	const handleLogout = () => {
-		localStorage.removeItem("auth");
+		localStorage.removeItem("username");
 		navigate("/");
 	};
+
+	if (isLoading) return <div className="p-6">Завантаження...</div>;
+	if (error)
+		return <div className="p-6 text-red-500">Не вдалося отримати новини</div>;
 
 	return (
 		<div className="p-6 max-w-5xl mx-auto">
@@ -35,11 +47,11 @@ const News = () => {
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{news.map((item) => (
 					<NewsCard
-						key={item.id}
-						id={item.id}
+						key={item.link}
+						id={item.link}
 						title={item.title}
 						preview={item.preview}
-						image={item.image}
+						image="/placeholder.png"
 					/>
 				))}
 			</div>
