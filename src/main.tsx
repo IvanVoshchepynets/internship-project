@@ -8,11 +8,11 @@ const queryClient = new QueryClient();
 
 const root = document.getElementById("root");
 if (root) {
-  ReactDOM.createRoot(root).render(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </React.StrictMode>
-  );
+	ReactDOM.createRoot(root).render(
+		<React.StrictMode>
+			<QueryClientProvider client={queryClient}>
+				<App />
+			</QueryClientProvider>
+		</React.StrictMode>,
+	);
 }
