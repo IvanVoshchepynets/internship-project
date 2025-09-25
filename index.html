@@ -9,5 +9,9 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script src="/prebid.js"></script>
+    <script>
+      window.pbjs = window.pbjs || { que: [] };
+    </script>
   </body>
 </html>

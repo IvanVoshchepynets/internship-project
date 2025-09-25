@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import AdSlot from "../ads/AdSlot";
 import Button from "../components/Button";
 import NewsCard from "../components/NewsCard";
 
@@ -41,6 +42,7 @@ const News = () => {
 		<div className="p-6 max-w-5xl mx-auto">
 			<div className="flex justify-between items-center mb-6">
 				<h1 className="text-2xl font-bold">Стрічка новин</h1>
+				<AdSlot id="div-gpt-ad-728x90" width={728} height={90} />
 				<Button onClick={handleLogout}>Вийти</Button>
 			</div>
 
