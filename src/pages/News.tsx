@@ -42,9 +42,17 @@ const News = () => {
 		<div className="p-6 max-w-5xl mx-auto">
 			<div className="flex justify-between items-center mb-6">
 				<h1 className="text-2xl font-bold">Стрічка новин</h1>
-				<AdSlot id="div-gpt-ad-728x90" width={728} height={90} />
+				{import.meta.env.VITE_ENABLE_ADS === "true" && (
+        	<div className="container mx-auto p-4">
+          		<AdSlot id="div-gpt-ad-123" width={728} height={90} />
+        	</div>
+      			)}
 				<Button onClick={handleLogout}>Вийти</Button>
 			</div>
+
+			<div className="mb-6">
+        		<AdSlot id="news-ad" width={728} height={90} />
+     		</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{news.map((item) => (

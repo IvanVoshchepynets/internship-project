@@ -1,36 +1,32 @@
 export function initAds() {
-	window.pbjs = window.pbjs || { que: [] };
+  if (!window.pbjs) {
+    console.warn("Prebid.js не знайдений. Перевірь, що він підключений в index.html");
+    return;
+  }
 
-	window.pbjs.que.push(() => {
-		const adUnits = [
-			{
-				code: "div-gpt-ad-300x250",
-				mediaTypes: {
-					banner: { sizes: [[300, 250]] },
-				},
-				bids: [
-					{ bidder: "adtelligent", params: { aid: 12345 } },
-					{ bidder: "bidmatic", params: { placementId: 67890 } },
-				],
-			},
-			{
-				code: "div-gpt-ad-728x90",
-				mediaTypes: {
-					banner: { sizes: [[728, 90]] },
-				},
-				bids: [
-					{ bidder: "adtelligent", params: { aid: 54321 } },
-					{ bidder: "bidmatic", params: { placementId: 98765 } },
-				],
-			},
-		];
+  console.log("Ads module initialized");
 
-		window.pbjs.addAdUnits(adUnits);
+  window.pbjs.que = window.pbjs.que || [];
+  window.pbjs.que.push(function () {
+    window.pbjs.addAdUnits([
+      {
+        code: "div-gpt-ad-123",
+        mediaTypes: {
+          banner: {
+            sizes: [[300, 250], [728, 90]],
+          },
+        },
+        bids: [
+          { bidder: "adtelligent", params: { aid: "12345" } },
+          { bidder: "bidmatic", params: { placementId: "67890" } },
+        ],
+      },
+    ]);
 
-		window.pbjs.requestBids({
-			bidsBackHandler: () => {
-				console.log("Bids:", window.pbjs.getBidResponses());
-			},
-		});
-	});
+    window.pbjs.requestBids({
+      bidsBackHandler: function () {
+        console.log("Bids received", window.pbjs.getBidResponses());
+      },
+    });
+  });
 }

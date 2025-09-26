@@ -63,7 +63,7 @@ const NewsDetail = () => {
 			/>
 			<p className="text-gray-700 text-lg leading-relaxed">{news.content}</p>
 			<div className="mt-8">
-				<AdSlot id="div-gpt-ad-300x250" width={300} height={250} />
+				<AdSlot id="detail-ad" width={300} height={600} />
 			</div>
 		</div>
 	);
