@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AdSlot from "../ads/AdSlot";
 import { AuthForm } from "../components/AuthForm";
 import Button from "../components/Button";
 import Layout from "../components/Layout";
@@ -12,6 +13,7 @@ import {
 import { useAuthStore } from "../store/auth";
 
 const Home = () => {
+	const adId = useId();
 	const [formType, setFormType] = useState<"login" | "register" | null>(null);
 	const { login, isAuthenticated, username, logout } = useAuthStore();
 	const navigate = useNavigate();
@@ -57,6 +59,11 @@ const Home = () => {
 					]}
 					onSubmit={onRegister}
 				/>
+			)}
+			{import.meta.env.VITE_ENABLE_ADS === "true" && (
+				<div className="container mx-auto p-4">
+					<AdSlot id={adId} width={300} height={250} />
+				</div>
 			)}
 		</Layout>
 	);

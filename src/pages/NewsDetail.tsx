@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useId } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AdSlot from "../ads/AdSlot";
 import newsData from "../mock/news.json";
@@ -17,6 +18,7 @@ const fetchNewsById = async (id: string): Promise<NewsItem | undefined> => {
 };
 
 const NewsDetail = () => {
+	const adId2 = useId();
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
@@ -62,9 +64,11 @@ const NewsDetail = () => {
 				className="w-full h-60 object-cover rounded mb-4"
 			/>
 			<p className="text-gray-700 text-lg leading-relaxed">{news.content}</p>
-			<div className="mt-8">
-				<AdSlot id="detail-ad" width={300} height={600} />
-			</div>
+			{import.meta.env.VITE_ENABLE_ADS === "true" && (
+				<div className="container mx-auto p-4">
+					<AdSlot id={adId2} width={300} height={600} />
+				</div>
+			)}
 		</div>
 	);
 };
