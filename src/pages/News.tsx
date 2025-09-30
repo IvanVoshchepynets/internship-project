@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { useId } from "react";
 import { useNavigate } from "react-router-dom";
+import AdSlot from "../ads/AdSlot";
 import Button from "../components/Button";
 import NewsCard from "../components/NewsCard";
 
@@ -18,6 +20,7 @@ const fetchNews = async (): Promise<NewsItem[]> => {
 };
 
 const News = () => {
+	const adId1 = useId();
 	const navigate = useNavigate();
 	const {
 		data: news = [],
@@ -41,6 +44,11 @@ const News = () => {
 		<div className="p-6 max-w-5xl mx-auto">
 			<div className="flex justify-between items-center mb-6">
 				<h1 className="text-2xl font-bold">Стрічка новин</h1>
+				{import.meta.env.VITE_ENABLE_ADS === "true" && (
+					<div className="container mx-auto p-4">
+						<AdSlot id={adId1} width={728} height={90} />
+					</div>
+				)}
 				<Button onClick={handleLogout}>Вийти</Button>
 			</div>
 
