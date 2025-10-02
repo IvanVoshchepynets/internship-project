@@ -5,6 +5,8 @@ import { createBrowserRouter } from "react-router-dom";
 const Home = lazy(() => import("./pages/Home"));
 const News = lazy(() => import("./pages/News"));
 const NewsDetail = lazy(() => import("./pages/NewsDetail"));
+const AdsDebug = lazy(() => import("./pages/AdsDebug"));
+const Stats = lazy(() => import("./pages/Stats"));
 
 const withSuspense = (Component: LazyExoticComponent<ComponentType>) => (
 	<Suspense fallback={<div>Loading...</div>}>
@@ -16,4 +18,6 @@ export const router = createBrowserRouter([
 	{ path: "/", element: withSuspense(Home) },
 	{ path: "/news", element: withSuspense(News) },
 	{ path: "/news/:id", element: withSuspense(NewsDetail) },
+	{ path: "/ads-debug", element: withSuspense(AdsDebug) },
+	{ path: "/stats", element: withSuspense(Stats) },
 ]);
