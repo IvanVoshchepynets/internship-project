@@ -10,7 +10,10 @@ type StatEvent = {
 
 function sendStat(data: StatEvent) {
 	try {
-		navigator.sendBeacon("/stats/event", JSON.stringify(data));
+		navigator.sendBeacon(
+			"http://localhost:3000/stats/event",
+			JSON.stringify(data),
+		);
 	} catch (err) {
 		console.warn("Beacon send failed", err);
 	}
@@ -35,7 +38,7 @@ export function initStats() {
 		];
 
 		events.forEach((ev) => {
-			window.pbjs.onEvent(ev, (args: any) => {
+			window.pbjs!.onEvent(ev, (args: any) => {
 				const stat: StatEvent = {
 					event: ev,
 					timestamp: Date.now(),

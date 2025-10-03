@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { useId } from "react";
+import { useEffect, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import AdSlot from "../ads/AdSlot";
 import Button from "../components/Button";
 import NewsCard from "../components/NewsCard";
+import { sendStat } from "../utils/stats";
 
 type NewsItem = {
 	id: string;
@@ -31,8 +32,13 @@ const News = () => {
 		queryFn: fetchNews,
 	});
 
+	useEffect(() => {
+		sendStat("openNewsPage");
+	}, []);
+
 	const handleLogout = () => {
 		localStorage.removeItem("username");
+		sendStat("logout");
 		navigate("/");
 	};
 
