@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { sendStat } from "../utils/stats";
 
 declare global {
 	interface Window {
@@ -14,14 +15,21 @@ export default function AdsDebug() {
 	useEffect(() => {
 		if (!window.pbjs) return;
 
-		const addLog = (msg: string) => {
+		const addLog = (msg: string, eventName?: string) => {
 			setLogs((prev) => [...prev, `${new Date().toISOString()} - ${msg}`]);
+			if (eventName) sendStat(eventName);
 		};
 
-		window.pbjs.onEvent("bidRequested", () => addLog("Bid requested"));
-		window.pbjs.onEvent("bidResponse", () => addLog("Bid response received"));
-		window.pbjs.onEvent("auctionEnd", () => addLog("Auction ended"));
-		window.pbjs.onEvent("bidWon", () => addLog("Bid won"));
+		window.pbjs.onEvent("bidRequested", () =>
+			addLog("Bid requested", "bidRequested"),
+		);
+		window.pbjs.onEvent("bidResponse", () =>
+			addLog("Bid response received", "bidResponse"),
+		);
+		window.pbjs.onEvent("auctionEnd", () =>
+			addLog("Auction ended", "auctionEnd"),
+		);
+		window.pbjs.onEvent("bidWon", () => addLog("Bid won", "bidWon"));
 
 		addLog("Subscribed to Prebid events");
 	}, []);

@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdSlot from "../ads/AdSlot";
 import { AuthForm } from "../components/AuthForm";
@@ -11,6 +11,7 @@ import {
 	registerSchema,
 } from "../schemas/authSchemas";
 import { useAuthStore } from "../store/auth";
+import { sendStat } from "../utils/stats";
 
 const Home = () => {
 	const adId = useId();
@@ -18,14 +19,20 @@ const Home = () => {
 	const { login, isAuthenticated, username, logout } = useAuthStore();
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		sendStat("pageLoad_Home");
+	}, []);
+
 	const onLogin = (data: LoginSchema) => {
 		login(data.username);
+		sendStat("login", { username: data.username });
 		navigate("/news");
 	};
 
 	const onRegister = (data: RegisterSchema) => {
 		console.log("Mock реєстрація:", data);
 		alert("Реєстрація успішна!");
+		sendStat("register", { username: data.username });
 		setFormType("login");
 	};
 

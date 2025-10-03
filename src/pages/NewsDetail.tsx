@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useId } from "react";
+import { useEffect, useId } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AdSlot from "../ads/AdSlot";
 import newsData from "../mock/news.json";
+import { sendStat } from "../utils/stats"; // ⬅️ імпорт
 
 type NewsItem = {
 	id: number;
@@ -31,6 +32,11 @@ const NewsDetail = () => {
 		queryFn: () => fetchNewsById(id!),
 		enabled: !!id,
 	});
+
+	// ⬅️ лог перегляду конкретної новини
+	useEffect(() => {
+		if (id) sendStat("openNewsDetail", { id });
+	}, [id]);
 
 	if (isLoading) return <div className="p-6">Завантаження...</div>;
 	if (error)
