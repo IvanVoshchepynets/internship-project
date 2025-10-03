@@ -3,7 +3,7 @@ import { useEffect, useId } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AdSlot from "../ads/AdSlot";
 import newsData from "../mock/news.json";
-import { sendStat } from "../utils/stats"; // ⬅️ імпорт
+import { sendStat } from "../utils/stats";
 
 type NewsItem = {
 	id: number;
@@ -33,7 +33,6 @@ const NewsDetail = () => {
 		enabled: !!id,
 	});
 
-	// ⬅️ лог перегляду конкретної новини
 	useEffect(() => {
 		if (id) sendStat("openNewsDetail", { id });
 	}, [id]);
