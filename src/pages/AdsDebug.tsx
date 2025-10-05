@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { sendStat } from "../utils/stats";
+import { sendStat } from "../stats/statsModule";
 
 declare global {
 	interface Window {

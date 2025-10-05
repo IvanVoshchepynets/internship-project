@@ -1,14 +1,23 @@
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 async function fetchStats() {
-	const res = await fetch("http://localhost:3000/stats/query?limit=100");
+	const res = await fetch("http://localhost:3000/stats/query?limit=300");
 	if (!res.ok) throw new Error("Failed to load stats");
 	const json = await res.json();
 	return json.data ?? [];
 }
 
 const Stats = () => {
+	useEffect(() => {
+		if (import.meta.env.VITE_ENABLE_STATS === "true") {
+			import("../stats/statsModule").then(({ initStats }) => {
+				initStats();
+			});
+		}
+	}, []);
+
 	const { data: rows = [], isLoading } = useQuery({
 		queryKey: ["stats"],
 		queryFn: fetchStats,

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import AdSlot from "../ads/AdSlot";
 import Button from "../components/Button";
 import NewsCard from "../components/NewsCard";
-import { sendStat } from "../utils/stats";
+import { sendStat } from "../stats/statsModule";
 
 type NewsItem = {
 	id: string;
