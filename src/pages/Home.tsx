@@ -10,8 +10,8 @@ import {
 	type RegisterSchema,
 	registerSchema,
 } from "../schemas/authSchemas";
+import { sendStat } from "../stats/statsModule";
 import { useAuthStore } from "../store/auth";
-import { sendStat } from "../utils/stats";
 
 const Home = () => {
 	const adId = useId();

@@ -3,7 +3,7 @@ import { useEffect, useId } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AdSlot from "../ads/AdSlot";
 import newsData from "../mock/news.json";
-import { sendStat } from "../utils/stats";
+import { sendStat } from "../stats/statsModule";
 
 type NewsItem = {
 	id: number;

@@ -6,26 +6,45 @@ type StatEvent = {
 	creativeId?: string;
 	cpm?: number;
 	geo?: string;
+	[key: string]: any;
 };
 
-function sendStat(data: StatEvent) {
+export function sendStat(event: string, extra: Record<string, any> = {}): void {
+	const url = "http://localhost:3000/stats/event";
+
+	const payload: StatEvent = {
+		event,
+		timestamp: Math.floor(Date.now() / 1000),
+		pageUrl: window.location.href,
+		...extra,
+	};
+
+	const body = JSON.stringify([payload]);
+
 	try {
-		navigator.sendBeacon(
-			"http://localhost:3000/stats/event",
-			JSON.stringify(data),
-		);
+		const blob = new Blob([body], { type: "application/json" });
+		const sent = navigator.sendBeacon(url, blob);
+
+		if (!sent) {
+			throw new Error("sendBeacon returned false");
+		}
 	} catch (err) {
-		console.warn("Beacon send failed", err);
+		console.warn("sendBeacon failed, fallback to fetch:", err);
+		fetch(url, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body,
+		}).catch((e) => console.warn("Fetch fallback failed:", e));
 	}
 }
 
-export function initStats() {
+export function initStats(): void {
 	const pageUrl = window.location.href;
 
-	sendStat({ event: "pageLoad", timestamp: Date.now(), pageUrl });
+	sendStat("pageLoad", { pageUrl });
 
 	window.addEventListener("adModuleLoaded", () => {
-		sendStat({ event: "adModuleLoad", timestamp: Date.now(), pageUrl });
+		sendStat("adModuleLoad", { pageUrl });
 	});
 
 	if (window.pbjs && window.pbjs.onEvent) {
@@ -41,7 +60,7 @@ export function initStats() {
 			window.pbjs!.onEvent(ev, (args: any) => {
 				const stat: StatEvent = {
 					event: ev,
-					timestamp: Date.now(),
+					timestamp: Math.floor(Date.now() / 1000),
 					pageUrl,
 				};
 
@@ -50,7 +69,7 @@ export function initStats() {
 				if (args?.cpm) stat.cpm = args.cpm;
 				if (args?.geo) stat.geo = args.geo;
 
-				sendStat(stat);
+				sendStat(ev, stat);
 			});
 		});
 	}
