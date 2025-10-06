@@ -1,69 +1,42 @@
-# React + TypeScript + Vite
+# Рекламний модуль (Prebid.js)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Чому реклама не рендерилася на `BidWon`
 
-Currently, two official plugins are available:
+Подія `pbjs.onEvent('bidWon')` лише сигналізує, що певний аукціон виграв конкретний bid.  
+Але сам показ банера **не відбувається автоматично** — для цього потрібно:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- або інтегрувати Google Publisher Tags (GPT), які візьмуть креатив і вставлять у DOM,
+- або реалізувати власний рендер (наприклад, `document.getElementById(divId).innerHTML = creative`).
 
-## Expanding the ESLint configuration
+Тому, коли слухаємо `BidWon`, але не використовуємо GPT чи кастомний рендер — реклама фізично не з’являється.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## `pbjs.getHighestCpmBids` vs `pbjs.onEvent('bidResponse')`
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### `pbjs.getHighestCpmBids`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Викликається після завершення аукціону.
+- Дає готовий масив **найвигідніших ставок** (з найвищим CPM).
+- Добре підходить, коли ми хочемо показати лише фінальний результат (наприклад, переможця на слот).
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### `pbjs.onEvent('bidResponse')`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Викликається **на кожен** bid від кожного SSP.
+- Дає можливість **логувати увесь процес аукціону** або будувати реальну статистику по ходу.
+- Використовується більше для дебагу та аналітики, ніж для відображення фінального банера.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Висновок
+
+- Для **рендерингу реклами** краще використовувати `pbjs.getHighestCpmBids`, бо воно дає фінальний переможний креатив.
+- Для **дебагу / логування** корисно підписуватися на `pbjs.onEvent('bidResponse')`.
+
+---
+
+## Як увімкнути/вимкнути рекламу
+
+Використовується змінна середовища:
+
+```env
+VITE_ENABLE_ADS=true
 ```
